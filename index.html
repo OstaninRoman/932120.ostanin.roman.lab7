@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Frontend Task №7</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        #controls {
+            margin-bottom: 20px;
+        }
+        #shapeCount {
+            width: 50px;
+        }
+        #canvas {
+            border: 1px solid #ffffff;
+            position: relative;
+        }
+        .shape {
+            position: absolute;
+            cursor: pointer;
+        }
+        .square {
+            background-color: red;
+            opacity: 0.9;
+        }
+        .triangle {
+            width: 0;
+            height: 0;
+            background-color: transparent;
+            border-left: 25px solid transparent;
+            border-right: 25px solid transparent;
+            border-bottom: 50px solid blue;
+            opacity: 0.9;
+        }
+        .circle {
+            background-color: green;
+            border-radius: 50%;
+            opacity: 0.9;
+        }
+        .selected {
+            opacity: 0.7;
+        }
+    </style>
+</head>
+<body>
+    <div id="controls">
+        <input type="number" id="shapeCount" min="1" max="10" value="1">
+        <button id="squareBtn">Квадрат</button>
+        <button id="triangleBtn">Треугольник</button>
+        <button id="circleBtn">Круг</button>
+    </div>
+    <div id="canvas"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const canvas = document.getElementById('canvas');
+            const shapeCount = document.getElementById('shapeCount');
+            const squareBtn = document.getElementById('squareBtn');
+            const triangleBtn = document.getElementById('triangleBtn');
+            const circleBtn = document.getElementById('circleBtn');
+
+            function createShape(type) {
+                const count = parseInt(shapeCount.value);
+                if (isNaN(count) || count < 1 || count > 10) {
+                    alert('Введите число от 1 до 10');
+                    return;
+                }
+
+                for (let i = 0; i < count; i++) {
+                    const shape = document.createElement('div');
+                    shape.className = `shape ${type}`;
+                    
+                    const size = Math.floor(Math.random() * 150) + 50; // Random size between 50 and 100
+
+                    let shapeWidth, shapeHeight;
+
+                    if (type === 'triangle') {
+                        shape.style.borderLeftWidth = `${size / 2}px`;
+                        shape.style.borderRightWidth = `${size / 2}px`;
+                        shape.style.borderBottomWidth = `${size}px`;
+                        shapeWidth = size;
+                        shapeHeight = size;
+                    } else {
+                        shape.style.width = `${size}px`;
+                        shape.style.height = `${size}px`;
+                        shapeWidth = shapeHeight = size;
+                    }
+
+                    const maxX = canvas.clientWidth - shapeWidth;
+                    const maxY = canvas.clientHeight - shapeHeight;
+                    shape.style.left = `${Math.floor(Math.random() * maxX)}px`;
+                    shape.style.top = `${Math.floor(Math.random() * maxY)}px`;
+
+                    shape.addEventListener('click', function() {
+                        this.classList.toggle('selected');
+                    });
+
+                    shape.addEventListener('dblclick', function() {
+                        canvas.removeChild(this);
+                    });
+
+                    canvas.appendChild(shape);
+                }
+            }
+
+            squareBtn.addEventListener('click', function() {
+                createShape('square');
+            });
+
+            triangleBtn.addEventListener('click', function() {
+                createShape('triangle');
+            });
+
+            circleBtn.addEventListener('click', function() {
+                createShape('circle');
+            });
+
+            function setCanvasSize() {
+                canvas.style.width = `${window.innerWidth - 40}px`;
+                canvas.style.height = `${window.innerHeight - 100}px`;
+            }
+
+            window.addEventListener('resize', setCanvasSize);
+            setCanvasSize();
+        });
+    </script>
+</body>
+</html>
